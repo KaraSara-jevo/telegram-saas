@@ -1,0 +1,52 @@
+# Laravel
+*/vendor/
+*/node_modules/
+*/storage/*.key
+*/storage/app/*
+*/storage/framework/cache/*
+*/storage/framework/sessions/*
+*/storage/framework/testing/*
+*/storage/framework/views/*
+*/storage/logs/*
+*/bootstrap/cache/
+.env
+.env.backup
+.env.*
+
+# Docker
+mysql_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.phar
+
+# NPM
+npm-debug.log
+yarn-error.log
+
+# PHP
+.phpunit.result.cache
+.phpunit.cache
+
+# Laravel specific
+public/hot
+public/storage
+storage/*.key
+.env
+
+# Microservices specific
+user-service/storage/
+inventory-service/storage/
+sales-service/storage/
+user-service/vendor/
+inventory-service/vendor/
+sales-service/vendor/
