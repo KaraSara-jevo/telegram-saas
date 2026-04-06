@@ -24,7 +24,7 @@ A Laravel-based microservices architecture for Telegram bot SaaS platform.
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone 
 cd telegram-saas
 ```
 
