@@ -62,6 +62,10 @@ class Sale extends Model
      */
     public function getProfitAttribute(): float
     {
+        if (!$this->relationLoaded('product') && !$this->product_id) {
+            return 0;
+        }
+
         if (!$this->product) {
             return 0;
         }

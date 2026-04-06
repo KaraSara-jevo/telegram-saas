@@ -15,7 +15,7 @@ class ExpenseController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Expense::with('user');
+        $query = Expense::query();
 
         // Filter by user
         if ($request->has('user_id')) {
@@ -73,7 +73,7 @@ class ExpenseController extends Controller
 
         return response()->json([
             'message' => 'Expense created successfully',
-            'expense' => $expense->load('user')
+            'expense' => $expense
         ], 201);
     }
 
@@ -82,7 +82,7 @@ class ExpenseController extends Controller
      */
     public function show($id)
     {
-        $expense = Expense::with('user')->find($id);
+        $expense = Expense::find($id);
         
         if (!$expense) {
             return response()->json(['error' => 'Expense not found'], 404);
@@ -121,7 +121,7 @@ class ExpenseController extends Controller
 
         return response()->json([
             'message' => 'Expense updated successfully',
-            'expense' => $expense->load('user')
+            'expense' => $expense
         ]);
     }
 

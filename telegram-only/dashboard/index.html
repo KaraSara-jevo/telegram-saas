@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Myanmar SME - Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            min-height: 100vh;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--tg-theme-button-color, #007bff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .shop-name {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--tg-theme-text-color, #000000);
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .card-icon {
+            width: 25px;
+            height: 25px;
+            background: var(--tg-theme-button-color, #007bff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .quick-btn {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quick-btn:hover {
+            background: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+        }
+        
+        .quick-btn-icon {
+            font-size: 24px;
+        }
+        
+        .quick-btn-text {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .btn {
+            background: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            color: var(--tg-theme-text-color, #000000);
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            border-radius: 8px;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            font-size: 14px;
+        }
+        
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .item-details {
+            font-size: 11px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .item-price {
+            font-weight: bold;
+            color: var(--tg-theme-text-color, #000000);
+        }
+        
+        .digit-entry {
+            background: var(--tg-theme-button-color, #007bff);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .digit-input {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            min-height: 50px;
+        }
+        
+        .digit-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .digit-btn {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .digit-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .tab-btn.active {
+            background: var(--tg-theme-button-color, #007bff);
+            color: white;
+            border-color: var(--tg-theme-button-color, #007bff);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            border-top: 3px solid var(--tg-theme-button-color, #007bff);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>အခုစတင်နေပါသည်...</p>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">👤</div>
+                    <div>
+                        <div class="user-name" id="userName">Loading...</div>
+                        <div class="shop-name" id="shopName">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="todaySales">0</div>
+                    <div class="stat-label">ဒီနေ့ရောင်းရငွေ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayCount">0</div>
+                    <div class="stat-label">ဒီနေ့အရောင်းအဝယ်</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="monthSales">0</div>
+                    <div class="stat-label">ယခုလရောင်းရငွေ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="lowStock">0</div>
+                    <div class="stat-label">စတော့နည်းပါး</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-btn" onclick="showDigitEntry()">
+                    <div class="quick-btn-icon">💰</div>
+                    <div class="quick-btn-text">အရောင်းအဝယ်မှတ်တမ်း</div>
+                </div>
+                <div class="quick-btn" onclick="showProducts()">
+                    <div class="quick-btn-icon">📦</div>
+                    <div class="quick-btn-text">ကုန်ပစ္စည်းများ</div>
+                </div>
+                <div class="quick-btn" onclick="showSales()">
+                    <div class="quick-btn-icon">📊</div>
+                    <div class="quick-btn-text">အရောင်းအဝယ်မှတ်တမ်း</div>
+                </div>
+                <div class="quick-btn" onclick="showReports()">
+                    <div class="quick-btn-icon">📈</div>
+                    <div class="quick-btn-text">ခန့်မှန်းချက်များ</div>
+                </div>
+            </div>
+
+            <!-- Digit Entry Section -->
+            <div class="digit-entry" id="digitEntrySection" style="display: none;">
+                <div class="card-title">
+                    <span>🔢 အရောင်းအဝယ်မှတ်တမ်း</span>
+                    <span onclick="hideDigitEntry()" style="cursor: pointer;">❌</span>
+                </div>
+                <div class="digit-input" id="digitInput">0</div>
+                <div class="digit-buttons">
+                    <button class="digit-btn" onclick="addDigit('1')">1</button>
+                    <button class="digit-btn" onclick="addDigit('2')">2</button>
+                    <button class="digit-btn" onclick="addDigit('3')">3</button>
+                    <button class="digit-btn" onclick="addDigit('4')">4</button>
+                    <button class="digit-btn" onclick="addDigit('5')">5</button>
+                    <button class="digit-btn" onclick="addDigit('6')">6</button>
+                    <button class="digit-btn" onclick="addDigit('7')">7</button>
+                    <button class="digit-btn" onclick="addDigit('8')">8</button>
+                    <button class="digit-btn" onclick="addDigit('9')">9</button>
+                    <button class="digit-btn" onclick="addDigit('*')">*</button>
+                    <button class="digit-btn" onclick="addDigit('0')">0</button>
+                    <button class="digit-btn" onclick="clearDigit()">C</button>
+                </div>
+                <button class="btn" onclick="saveDigitEntry()">💾 မှတ်တမ်းရန်</button>
+            </div>
+
+            <!-- Products Section -->
+            <div class="card" id="productsSection" style="display: none;">
+                <div class="card-title">
+                    <span>📦 ကုန်ပစ္စည်းများ</span>
+                    <span onclick="hideProducts()" style="cursor: pointer;">❌</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">ကုန်ပစ္စည်းရှာရန်</label>
+                    <input type="text" class="form-input" id="productSearch" placeholder="ကုန်ပစ္စည်းအမည်...">
+                </div>
+                
+                <div id="productsList">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <p>ကုန်ပစ္စည်းများကိုခေါ်ဆိုနေပါသည်...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Section -->
+            <div class="card" id="salesSection" style="display: none;">
+                <div class="card-title">
+                    <span>📊 အရောင်းအဝယ်မှတ်တမ်း</span>
+                    <span onclick="hideSales()" style="cursor: pointer;">❌</span>
+                </div>
+                
+                <div class="tab-buttons">
+                    <div class="tab-btn active" onclick="showSalesTab('today')">ဒီနေ့</div>
+                    <div class="tab-btn" onclick="showSalesTab('week')">ယခုပတ်</div>
+                    <div class="tab-btn" onclick="showSalesTab('month')">ယခုလ</div>
+                </div>
+                
+                <div id="todaySalesTab" class="tab-content active">
+                    <div id="todaySalesList">
+                        <div class="empty-state">
+                            <div class="empty-icon">📊</div>
+                            <p>ဒီနေ့အရောင်းအဝယ်မှတ်တမ်းများကိုခေါ်ဆိုနေပါသည်...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="weekSalesTab" class="tab-content">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <p>ယခုပတ်အရောင်းအဝယ်မှတ်တမ်းများကိုခေါ်ဆိုနေပါသည်...</p>
+                    </div>
+                </div>
+                
+                <div id="monthSalesTab" class="tab-content">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <p>ယခုလအရောင်းအဝယ်မှတ်တမ်းများကိုခေါ်ဆိုနေပါသည်...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="card" id="reportsSection" style="display: none;">
+                <div class="card-title">
+                    <span>📈 ခန့်မှန်းချက်များ</span>
+                    <span onclick="hideReports()" style="cursor: pointer;">❌</span>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">15,000 Ks</div>
+                        <div class="stat-label">ဒီနေ့ဝင်ငွေ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">85,000 Ks</div>
+                        <div class="stat-label">ယခုပတ်ဝင်ငွေ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">320,000 Ks</div>
+                        <div class="stat-label">ယခုလဝင်ငွေ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2.4M Ks</div>
+                        <div class="stat-label">စုစုပေါင်းဝင်ငွေ</div>
+                    </div>
+                </div>
+                
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-name">အောင်လေး</div>
+                        <div class="item-details">အများဆုံးဝယ်သူ</div>
+                    </div>
+                    <div class="item-price">45,000 Ks</div>
+                </div>
+                
+                <div class="list-item">
+                    <div class="item-info">
+                        <div class="item-name">ဆန်ထမင်း</div>
+                        <div class="item-details">အများဆုံးရောင်းသောကုန်ပစ္စည်း</div>
+                    </div>
+                    <div class="item-price">120,000 Ks</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <button class="btn" onclick="addProduct()">
+                ➕ ကုန်ပစ္စည်းထည့်ရန်
+            </button>
+            
+            <button class="btn btn-secondary" onclick="exportData()">
+                📊 ဒေတာတင်ပို့ရန်
+            </button>
+            
+            <button class="btn btn-danger" onclick="logout()">
+                🚪 ထွက်ရန်
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App
+        let tg;
+        let user;
+        let currentUser = null;
+        let digitEntryValue = '0';
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Telegram Web App is available
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                
+                // Expand the Web App
+                tg.expand();
+                
+                // Get user info
+                user = tg.initDataUnsafe?.user;
+                
+                // Set theme colors
+                setTelegramTheme();
+                
+                // Show main content
+                showMainContent();
+                
+                // Load user data
+                loadUserData();
+                
+                // Load dashboard data
+                loadDashboardData();
+                
+            } else {
+                // Fallback for non-Telegram environment
+                console.log('Telegram Web App not available, using fallback');
+                showMainContent();
+                loadMockData();
+            }
+        });
+
+        function setTelegramTheme() {
+            document.body.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
+            document.body.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
+            document.body.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999');
+            document.body.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#007bff');
+            document.body.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#007bff');
+            document.body.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+            document.body.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f8f9fa');
+            document.body.style.setProperty('--tg-theme-section-separator-color', tg.themeParams.section_separator_color || '#e5e7eb');
+        }
+
+        function showMainContent() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        async function loadUserData() {
+            // Get user ID from URL or Telegram user
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user_id') || (user ? user.id : null);
+            
+            if (!userId) {
+                showError('User ID မပါရှိပါ။');
+                return;
+            }
+
+            try {
+                // In production, this would be an API call to your user service
+                // For now, we'll use mock data
+                currentUser = {
+                    id: userId,
+                    name: user ? user.first_name : 'Test User',
+                    shop_name: 'Test Shop',
+                    email: 'test@example.com',
+                    phone: '+959123456789'
+                };
+                
+                // Update UI
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('shopName').textContent = currentUser.shop_name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showError('အသုံးပြုသူဒေတာဖတ်ရှုနေပါသည်...');
+            }
+        }
+
+        async function loadDashboardData() {
+            try {
+                // In production, this would be API calls to your services
+                // For now, we'll use mock data
+                updateStats({
+                    todaySales: '15,000 Ks',
+                    todayCount: '12',
+                    monthSales: '320,000 Ks',
+                    lowStock: '3'
+                });
+                
+                loadProducts();
+                loadSales();
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showError('ဒက်ရှ်ဘုတ်ဒေတာဖတ်ရှုနေပါသည်...');
+            }
+        }
+
+        function loadMockData() {
+            currentUser = {
+                id: 12345,
+                name: 'Test User',
+                shop_name: 'Test Shop',
+                email: 'test@example.com',
+                phone: '+959123456789'
+            };
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('shopName').textContent = currentUser.shop_name;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            updateStats({
+                todaySales: '15,000 Ks',
+                todayCount: '12',
+                monthSales: '320,000 Ks',
+                lowStock: '3'
+            });
+            
+            loadProducts();
+            loadSales();
+        }
+
+        function updateStats(stats) {
+            document.getElementById('todaySales').textContent = stats.todaySales;
+            document.getElementById('todayCount').textContent = stats.todayCount;
+            document.getElementById('monthSales').textContent = stats.monthSales;
+            document.getElementById('lowStock').textContent = stats.lowStock;
+        }
+
+        function showDigitEntry() {
+            document.getElementById('digitEntrySection').style.display = 'block';
+            hideProducts();
+            hideSales();
+            hideReports();
+        }
+
+        function hideDigitEntry() {
+            document.getElementById('digitEntrySection').style.display = 'none';
+            digitEntryValue = '0';
+            document.getElementById('digitInput').textContent = '0';
+        }
+
+        function addDigit(digit) {
+            if (digitEntryValue === '0' && digit !== '0') {
+                digitEntryValue = digit;
+            } else if (digitEntryValue !== '0') {
+                digitEntryValue += digit;
+            }
+            document.getElementById('digitInput').textContent = digitEntryValue;
+        }
+
+        function clearDigit() {
+            digitEntryValue = '0';
+            document.getElementById('digitInput').textContent = '0';
+        }
+
+        function saveDigitEntry() {
+            if (digitEntryValue === '0') {
+                showError('အရောင်းအဝယ်ပမားနှုန်းကိုထည့်ပါ');
+                return;
+            }
+
+            // Parse digit entry (e.g., "25*5000" = 25 items * 5000 each)
+            const parts = digitEntryValue.split('*');
+            if (parts.length === 2) {
+                const quantity = parseInt(parts[0]);
+                const unitPrice = parseInt(parts[1]);
+                const totalAmount = quantity * unitPrice;
+                
+                // In production, this would save to your sales service
+                showSuccess(`အရောင်းအဝယ်မှတ်တမ်းပြီးပါပြီ: ${quantity} ခု x ${unitPrice} Ks = ${totalAmount} Ks`);
+                
+                // Reset and hide
+                hideDigitEntry();
+                loadSales(); // Refresh sales list
+            } else {
+                showError('ပုံစံမှားနေပါသည်။ ဥပမာ: 25*5000');
+            }
+        }
+
+        function showProducts() {
+            document.getElementById('productsSection').style.display = 'block';
+            hideDigitEntry();
+            hideSales();
+            hideReports();
+        }
+
+        function hideProducts() {
+            document.getElementById('productsSection').style.display = 'none';
+        }
+
+        function loadProducts() {
+            // Mock products data
+            const products = [
+                { id: 1, name: 'ဆန်ထမင်း', stock: 50, price: '2,000 Ks', lowStock: false },
+                { id: 2, name: 'ဆီထွက်', stock: 3, price: '15,000 Ks', lowStock: true },
+                { id: 3, name: 'ကြက်ဥ', stock: 100, price: '300 Ks', lowStock: false },
+                { id: 4, name: 'ငါးခြောက်', stock: 2, price: '8,000 Ks', lowStock: true }
+            ];
+
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = '';
+
+            products.forEach(product => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${product.name}</div>
+                        <div class="item-details">စတော့: ${product.stock} | စျေးနှုန်း: ${product.price}</div>
+                    </div>
+                    <div class="item-price" style="color: ${product.lowStock ? '#dc3545' : 'inherit'}">
+                        ${product.lowStock ? '⚠️' : '✅'}
+                    </div>
+                `;
+                productsList.appendChild(item);
+            });
+        }
+
+        function showSales() {
+            document.getElementById('salesSection').style.display = 'block';
+            hideDigitEntry();
+            hideProducts();
+            hideReports();
+        }
+
+        function hideSales() {
+            document.getElementById('salesSection').style.display = 'none';
+        }
+
+        function loadSales() {
+            // Mock sales data
+            const todaySales = [
+                { id: 1, product: 'ဆန်ထမင်း', quantity: 5, total: '10,000 Ks', time: '10:30 AM' },
+                { id: 2, product: 'ဆီထွက်', quantity: 1, total: '15,000 Ks', time: '11:15 AM' },
+                { id: 3, product: 'ကြက်ဥ', quantity: 20, total: '6,000 Ks', time: '2:30 PM' }
+            ];
+
+            const todaySalesList = document.getElementById('todaySalesList');
+            todaySalesList.innerHTML = '';
+
+            todaySales.forEach(sale => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${sale.product}</div>
+                        <div class="item-details">${sale.quantity} ခု | ${sale.time}</div>
+                    </div>
+                    <div class="item-price">${sale.total}</div>
+                `;
+                todaySalesList.appendChild(item);
+            });
+        }
+
+        function showReports() {
+            document.getElementById('reportsSection').style.display = 'block';
+            hideDigitEntry();
+            hideProducts();
+            hideSales();
+        }
+
+        function hideReports() {
+            document.getElementById('reportsSection').style.display = 'none';
+        }
+
+        function showSalesTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tab + 'SalesTab').classList.add('active');
+        }
+
+        function addProduct() {
+            if (tg) {
+                tg.showPopup({
+                    title: '📦 ကုန်ပစ္စည်းထည့်ရန်',
+                    message: 'ကုန်ပစ္စည်းအသစ်ထည့်ရန်အတွက်:\n\n• ကုန်ပစ္စည်းအမည်\n• စျေးနှုန်း\n• စတော့အရေအတွက်',
+                    buttons: [
+                        {
+                            id: 'coming_soon',
+                            type: 'default',
+                            text: 'ရပ်တည်စောင့်ဆို့ပါ'
+                        }
+                    ]
+                });
+            } else {
+                alert('ကုန်ပစ္စည်းထည့်ရန်အင်္ဂါရပ်ရပ်တည်စောင့်ဆို့ပါ');
+            }
+        }
+
+        function exportData() {
+            if (tg) {
+                tg.showPopup({
+                    title: '📊 ဒေတာတင်ပို့ရန်',
+                    message: 'ဒေတာတင်ပို့ရန်အတွက်:\n\n• Excel ဖိုင်\n• CSV ဖိုင်\n• PDF အစီရင်ခံစာ',
+                    buttons: [
+                        {
+                            id: 'coming_soon',
+                            type: 'default',
+                            text: 'ရပ်တည်စောင့်ဆို့ပါ'
+                        }
+                    ]
+                });
+            } else {
+                alert('ဒေတာတင်ပို့ရန်အင်္ဂါရပ်ရပ်တည်စောင့်ဆို့ပါ');
+            }
+        }
+
+        function logout() {
+            if (tg) {
+                tg.showPopup({
+                    title: '🚪 ထွက်ရန်',
+                    message: 'ဒက်ရှ်ဘုတ်မှထွက်ရန်သေချာပါသလား?',
+                    buttons: [
+                        {
+                            id: 'logout',
+                            type: 'default',
+                            text: 'ထွက်ရန်'
+                        },
+                        {
+                            id: 'cancel',
+                            type: 'cancel',
+                            text: 'ပယ်ဖျက်ရန်'
+                        }
+                    ]
+                }, function(buttonId) {
+                    if (buttonId === 'logout') {
+                        tg.close();
+                    }
+                });
+            } else {
+                if (confirm('ဒက်ရှ်ဘုတ်မှထွက်ရန်သေချာပါသလား?')) {
+                    window.close();
+                }
+            }
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            successDiv.style.position = 'fixed';
+            successDiv.style.top = '20px';
+            successDiv.style.left = '50%';
+            successDiv.style.transform = 'translateX(-50%)';
+            successDiv.style.zIndex = '1000';
+            successDiv.style.padding = '15px';
+            successDiv.style.borderRadius = '10px';
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(successDiv);
+            }, 3000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.top = '20px';
+            errorDiv.style.left = '50%';
+            errorDiv.style.transform = 'translateX(-50%)';
+            errorDiv.style.zIndex = '1000';
+            errorDiv.style.padding = '15px';
+            errorDiv.style.borderRadius = '10px';
+            
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(errorDiv);
+            }, 3000);
+        }
+
+        // Handle back button
+        if (tg) {
+            tg.onEvent('backButtonClicked', function() {
+                tg.close();
+            });
+        }
+    </script>
+</body>
+</html>

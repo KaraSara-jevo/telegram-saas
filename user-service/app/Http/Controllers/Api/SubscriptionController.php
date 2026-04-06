@@ -16,8 +16,14 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $users = User::with('activationCodes')->get();
-        return response()->json($users);
+        try {
+            $users = User::with('activationCodes')->get();
+            return response()->json($users);
+        } catch (\Exception $e) {
+            // Fallback to without relationship if there's an issue
+            $users = User::get();
+            return response()->json($users);
+        }
     }
 
     /**

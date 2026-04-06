@@ -161,7 +161,6 @@ class AccountingService
                 DB::raw('SUM(quantity) as total_quantity'),
                 DB::raw('SUM(total_amount) as total_revenue')
             )
-            ->with('product:name,sku')
             ->groupBy('product_id')
             ->orderBy('total_revenue', 'desc')
             ->limit($limit);

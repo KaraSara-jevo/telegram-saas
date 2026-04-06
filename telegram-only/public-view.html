@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Myanmar SME - Public View</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            min-height: 100vh;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px 15px;
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 15px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 30px;
+            color: white;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--tg-theme-text-color, #000000);
+        }
+        
+        .subtitle {
+            font-size: 12px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-icon {
+            width: 25px;
+            height: 25px;
+            background: var(--tg-theme-button-color, #007bff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .pricing-card {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            position: relative;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--tg-theme-button-color, #007bff);
+            background: var(--tg-theme-button-color, #007bff);
+            color: white;
+        }
+        
+        .pricing-card.featured * {
+            color: white;
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--tg-theme-button-color, #007bff);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .pricing-duration {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .pricing-price {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-features {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--tg-theme-button-color, #007bff);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 10px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        
+        .feature-content {
+            flex: 1;
+        }
+        
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+        
+        .feature-description {
+            font-size: 11px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .btn {
+            background: var(--tg-theme-button-color, #007bff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            color: var(--tg-theme-text-color, #000000);
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .contact-info {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .contact-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--tg-theme-button-color, #007bff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .trial-banner {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .trial-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .trial-description {
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid var(--tg-theme-section-separator-color, #e5e7eb);
+        }
+        
+        .stat-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--tg-theme-text-color, #000000);
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: var(--tg-theme-hint-color, #999999);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--tg-theme-section-separator-color, #e5e7eb);
+            border-top: 3px solid var(--tg-theme-button-color, #007bff);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Public View ကိုဖွင့်နေပါသည်...</p>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">🏪</div>
+                <h1 class="title">Myanmar SME</h1>
+                <p class="subtitle">Business Management System</p>
+            </div>
+
+            <!-- Trial Banner -->
+            <div class="trial-banner">
+                <div class="trial-title">🔰 7 ရက်အခမဲ့ Trial!</div>
+                <div class="trial-description">အခုပဲ Trial စမ်းသုံးကြည့်ရှုပါ</div>
+                <button class="btn" onclick="startTrial()">🚀 Trial စမ်းသုံးရန်</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">စီးပွားရေးလုပ်ငန်းများ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">စုစုပေါင်းအရောင်းအဝယ်</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">စနစ်တက်နိုင်မှု</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">အထောက်အပံ့ပေးမှု</div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">⭐</div>
+                    <span>အဓိကအင်္ဂါရပ်များ</span>
+                </div>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-content">
+                            <div class="feature-title">စီးပွားရေးခန့်မှန်းချက်များ</div>
+                            <div class="feature-description">အရောင်းအဝယ်နှင့်ဝင်ငွေခန့်မှန်းချက်များ</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">📦</div>
+                        <div class="feature-content">
+                            <div class="feature-title">ကုန်ပစ္စည်းစီမံခန့်ခွဲမှု</div>
+                            <div class="feature-description">စတော့စစ်စစ်စနစ်နှင့်ကုန်ပစ္စည်းစီမံခန့်ခွဲမှု</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-content">
+                            <div class="feature-title">Telegram ထဲမှာပဲအသုံးပြု</div>
+                            <div class="feature-description">Browser မသုံးပဲအလုပ်လုပ်</div>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">🔒</div>
+                        <div class="feature-content">
+                            <div class="feature-title">လုံခြုံသောစနစ်</div>
+                            <div class="feature-description">ဒေတာလုံခြုံရေးနှင့် Access Code စနစ်</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pricing Plans -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">💰</div>
+                    <span>စားသုံးခလုတ်နှိုင်းများ</span>
+                </div>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-duration">1 လ</div>
+                        <div class="pricing-price">15,000 Ks</div>
+                        <div class="pricing-features">
+                            • ကုန်ပစ္စည်း 50 ခု<br>
+                            • နေ့စဉ်အရောင်းအဝယ် 100<br>
+                            • အခြေခံခန့်မှန်းချက်
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">အများဆုံးရွေးချယ်</div>
+                        <div class="pricing-duration">3 လ</div>
+                        <div class="pricing-price">40,000 Ks</div>
+                        <div class="pricing-features">
+                            • ကုန်ပစ္စည်း 200 ခု<br>
+                            • နေ့စဉ်အရောင်းအဝယ် 500<br>
+                            • အဆင့်မြင့်ခန့်မှန်းချက်
+                        </div>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-duration">1 နှစ်</div>
+                        <div class="pricing-price">150,000 Ks</div>
+                        <div class="pricing-features">
+                            • ကုန်ပစ္စည်း ကန့်သတ်မရှိ<br>
+                            • နေ့စဉ်အရောင်းအဝယ် ကန့်သတ်မရှိ<br>
+                            • အပြည့်အစုံခန့်မှန်းချက်
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-icon">📞</div>
+                    <span>ဆက်သွယ်ရန်လိုအပ်ချက်</span>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>
+                            <strong>ဖုန်း:</strong> +959 123 456 789
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div>
+                            <strong>အီးမေးလ်:</strong> info@myanmarsme.com
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🕐</div>
+                        <div>
+                            <strong>ဆက်သွယ်နိုင်သောအချိန်:</strong><br>
+                            တနင်္လာ-သောကြာ: 9:00 AM - 6:00 PM<br>
+                            စနေ: 9:00 AM - 1:00 PM
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <button class="btn" onclick="contactAdmin()">
+                📞 Admin နဲ့တိုက်ရိုက်ဆက်သွယ်ရန်
+            </button>
+            
+            <button class="btn btn-secondary" onclick="requestAccess()">
+                🔑 Access Code တောင်းဆိုရန်
+            </button>
+            
+            <button class="btn btn-secondary" onclick="closeMiniApp()">
+                🔙 Bot သို့ပြန်သွားရန်
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App
+        let tg;
+        let user;
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Telegram Web App is available
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                
+                // Expand the Web App
+                tg.expand();
+                
+                // Get user info
+                user = tg.initDataUnsafe?.user;
+                
+                // Set theme colors
+                setTelegramTheme();
+                
+                // Show main content
+                showMainContent();
+                
+                // Set main button
+                tg.MainButton.text = 'Access Code တောင်းဆိုရန်';
+                tg.MainButton.onClick(requestAccess);
+                tg.MainButton.show();
+                
+                // Set back button
+                tg.BackButton.onClick(closeMiniApp);
+                tg.BackButton.show();
+                
+            } else {
+                // Fallback for non-Telegram environment
+                console.log('Telegram Web App not available, using fallback');
+                showMainContent();
+            }
+        });
+
+        function setTelegramTheme() {
+            document.body.style.setProperty('--tg-theme-bg-color', tg.themeParams.bg_color || '#ffffff');
+            document.body.style.setProperty('--tg-theme-text-color', tg.themeParams.text_color || '#000000');
+            document.body.style.setProperty('--tg-theme-hint-color', tg.themeParams.hint_color || '#999999');
+            document.body.style.setProperty('--tg-theme-link-color', tg.themeParams.link_color || '#007bff');
+            document.body.style.setProperty('--tg-theme-button-color', tg.themeParams.button_color || '#007bff');
+            document.body.style.setProperty('--tg-theme-button-text-color', tg.themeParams.button_text_color || '#ffffff');
+            document.body.style.setProperty('--tg-theme-secondary-bg-color', tg.themeParams.secondary_bg_color || '#f8f9fa');
+            document.body.style.setProperty('--tg-theme-section-separator-color', tg.themeParams.section_separator_color || '#e5e7eb');
+        }
+
+        function showMainContent() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        function startTrial() {
+            if (tg) {
+                tg.showPopup({
+                    title: '🔰 Trial စမ်းသုံးရန်',
+                    message: '7 ရက်အခမဲ့ Trial စမ်းသုံးရန် Access Code တောင်းဆိုပါ။',
+                    buttons: [
+                        {
+                            id: 'request_trial',
+                            type: 'default',
+                            text: 'Trial တောင်းဆိုရန်'
+                        },
+                        {
+                            id: 'cancel',
+                            type: 'cancel',
+                            text: 'ပယ်ဖျက်ရန်'
+                        }
+                    ]
+                }, function(buttonId) {
+                    if (buttonId === 'request_trial') {
+                        requestAccess();
+                    }
+                });
+            } else {
+                alert('Trial စမ်းသုံးရန် Access Code တောင်းဆိုပါ။');
+            }
+        }
+
+        function contactAdmin() {
+            if (tg) {
+                tg.showPopup({
+                    title: '📞 Admin နဲ့ဆက်သွယ်ရန်',
+                    message: 'Admin နဲ့တိုက်ရိုက်ဆက်သွယ်ရန်အတွက်:\n\n📞 +959 123 456 789\n📧 info@myanmarsme.com',
+                    buttons: [
+                        {
+                            id: 'close',
+                            type: 'default',
+                            text: 'နားလည်ပါပြီ'
+                        }
+                    ]
+                });
+            } else {
+                alert('Admin ဆက်သွယ်ရန်:\n📞 +959 123 456 789\n📧 info@myanmarsme.com');
+            }
+        }
+
+        function requestAccess() {
+            if (tg) {
+                tg.showPopup({
+                    title: '🔑 Access Code တောင်းဆိုရန်',
+                    message: 'Access Code ရယူရန်အတွက်:\n\n1️⃣ Admin ကိုဆက်သွယ်ပါ\n2️⃣ သင့်အချက်အလက်များပေးပါ\n3️⃣ Access Code ရယူပါ\n4️⃣ Dashboard အသုံးပြုပါ',
+                    buttons: [
+                        {
+                            id: 'contact_admin',
+                            type: 'default',
+                            text: 'Admin ဆက်သွယ်ရန်'
+                        },
+                        {
+                            id: 'close',
+                            type: 'default',
+                            text: 'နားလည်ပါပြီ'
+                        }
+                    ]
+                }, function(buttonId) {
+                    if (buttonId === 'contact_admin') {
+                        contactAdmin();
+                    }
+                });
+            } else {
+                alert('Access Code တောင်းဆိုရန် Admin ကိုဆက်သွယ်ပါ။');
+            }
+        }
+
+        function closeMiniApp() {
+            if (tg) {
+                tg.close();
+            } else {
+                window.close();
+            }
+        }
+
+        // Handle back button
+        if (tg) {
+            tg.onEvent('backButtonClicked', function() {
+                tg.close();
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Myanmar SME Telegram-Only Bot Environment Variables
+# Copy this file to .env and update with your values
+
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN_HERE
+
+# Base URL Configuration
+# Update this to your domain where the files are hosted
+BASE_URL=https://your-domain.com
+
+# Optional: Additional configuration
+# DEBUG=True
+# LOG_LEVEL=INFO

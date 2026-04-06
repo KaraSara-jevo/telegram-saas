@@ -17,9 +17,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'id', // Telegram ID
         'username',
+        'email',
+        'password',
         'shop_name',
+        'telegram_user_id',
+        'phone',
+        'address',
         'is_active',
         'subscription_end_date',
     ];
@@ -30,6 +34,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
+        'password',
         'remember_token',
     ];
 
@@ -40,9 +45,11 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'integer',
+        'telegram_user_id' => 'integer',
         'is_active' => 'boolean',
         'subscription_end_date' => 'date',
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\DigitRecord;
 use App\Models\Sale;
 use App\Services\AccountingService;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class SalesController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Sale::with(['product', 'user']);
+        $query = Sale::query();
 
         // Filter by user
         if ($request->has('user_id')) {
@@ -82,7 +83,7 @@ class SalesController extends Controller
 
         return response()->json([
             'message' => 'Sale created successfully',
-            'sale' => $sale->load(['product', 'user'])
+            'sale' => $sale
         ], 201);
     }
 
@@ -91,7 +92,7 @@ class SalesController extends Controller
      */
     public function show($id)
     {
-        $sale = Sale::with(['product', 'user'])->find($id);
+        $sale = Sale::find($id);
         
         if (!$sale) {
             return response()->json(['error' => 'Sale not found'], 404);
@@ -141,7 +142,7 @@ class SalesController extends Controller
 
         return response()->json([
             'message' => 'Sale updated successfully',
-            'sale' => $sale->load(['product', 'user'])
+            'sale' => $sale
         ]);
     }
 
@@ -171,8 +172,7 @@ class SalesController extends Controller
         $date = $request->get('date', today());
         $userId = $request->get('user_id');
 
-        $sales = Sale::whereDate('sale_date', $date)
-            ->with(['product', 'user']);
+        $sales = Sale::whereDate('sale_date', $date);
 
         if ($userId) {
             $sales->forUser($userId);
@@ -205,8 +205,7 @@ class SalesController extends Controller
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate = Carbon::create($year, $month, 1)->endOfMonth();
 
-        $sales = Sale::dateRange($startDate, $endDate)
-            ->with(['product', 'user']);
+        $sales = Sale::dateRange($startDate, $endDate);
 
         if ($userId) {
             $sales->forUser($userId);
@@ -227,5 +226,36 @@ class SalesController extends Controller
             ],
             'sales' => $sales,
         ]);
+    }
+
+    /**
+     * Store a Digit Ledger entry from a compact input string like 25*5000.
+     */
+    public function storeEntry(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'input_string' => ['required', 'string', 'regex:/^\s*(\d{2})\s*\*\s*(\d+(?:\.\d{1,2})?)\s*$/'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors(),
+                'message' => 'Use the format 00*1000 through 99*1000.',
+            ], 422);
+        }
+
+        preg_match('/^\s*(\d{2})\s*\*\s*(\d+(?:\.\d{1,2})?)\s*$/', $request->input_string, $matches);
+
+        $record = DigitRecord::create([
+            'input_string' => trim($request->input_string),
+            'digit' => (int) $matches[1],
+            'amount' => $matches[2],
+            'recorded_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Digit record created successfully',
+            'record' => $record,
+        ], 201);
     }
 }
