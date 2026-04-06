@@ -10,7 +10,7 @@ A Laravel-based microservices architecture for Telegram bot SaaS platform.
 - **Sales Service** (Port 8003) - Sales transactions, expenses, accounting
 
 ### Infrastructure
-- **MySQL** - Shared database with separate schemas per service
+- **MySQL** - Separate schemas per service
 - **Nginx** - Reverse proxy / API Gateway
 - **Docker** - Container orchestration
 
